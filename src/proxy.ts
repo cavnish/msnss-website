@@ -4,22 +4,43 @@ import type { NextRequest } from "next/server";
 export function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // Legacy /services URLs → canonical /solutions (true 308 before rendering, SEO-safe).
+  // /services → /solutions
   if (path === "/services" || path.startsWith("/services/")) {
-    const target = path.replace(/^\/services/, "/solutions") || "/solutions";
-    return NextResponse.redirect(new URL(target + req.nextUrl.search, req.url), 308);
+    const target =
+      path.replace(/^\/services/, "/solutions") || "/solutions";
+
+    return NextResponse.redirect(
+      new URL(target + req.nextUrl.search, req.url),
+      308
+    );
   }
 
-  // Protect admin routes (except the login page) at the edge.
-  if (path.startsWith("/admin") && path !== "/admin/login" && !req.cookies.get("msnss_admin")) {
+  // Protect admin pages except login
+  if (
+    path.startsWith("/admin") &&
+    path !== "/admin/login" &&
+    !req.cookies.get("msnss_admin")
+  ) {
     const login = new URL("/admin/login", req.url);
     login.searchParams.set("next", path);
+
     return NextResponse.redirect(login);
   }
 
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", path);
-  return NextResponse.next({ request: { headers: requestHeaders } });
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
-export const config = { matcher: ["/admin/:path*", "/services", "/services/:path*"] };
+export const config = {
+  matcher: [
+    "/admin/:path*",
+    "/services",
+    "/services/:path*",
+  ],
+};
