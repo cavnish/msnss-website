@@ -1,0 +1,10 @@
+import { db } from "@/db";
+import { projects } from "@/db/schema";
+import { desc } from "drizzle-orm";
+import { requireAuth,slugify } from "@/lib/admin-api";
+import { z } from "zod";
+export const dynamic="force-dynamic";
+const input=z.object({clientId:z.coerce.number().int().positive().nullable().optional(),name:z.string().trim().min(2),slug:z.string().optional(),location:z.string().trim().min(2),region:z.string().optional().nullable(),category:z.string().min(1),industry:z.string().optional().nullable(),year:z.coerce.number().int().min(1900).max(2200).nullable().optional(),status:z.enum(["completed","ongoing","upcoming"]),shortDescription:z.string().optional().nullable(),description:z.string().min(3),scopeOfWork:z.string().min(3),imageUrl:z.string().min(1),videoUrl:z.string().optional().nullable(),servicesUsed:z.array(z.string()).default([]),sortOrder:z.coerce.number().int().default(0),featured:z.boolean().default(false),active:z.boolean().default(true)});
+function values(b:z.infer<typeof input>){return {clientId:b.clientId||null,name:b.name,slug:slugify(b.slug||b.name),location:b.location,region:b.region||null,category:b.category,industry:b.industry||null,year:b.year||null,status:b.status,shortDescription:b.shortDescription||null,description:b.description,scopeOfWork:b.scopeOfWork,imageUrl:b.imageUrl,videoUrl:b.videoUrl||null,servicesUsed:b.servicesUsed,sortOrder:b.sortOrder,featured:b.featured,active:b.active,updatedAt:new Date()}}
+export async function GET(){const unauth=await requireAuth();if(unauth)return unauth;return Response.json(await db.select().from(projects).orderBy(desc(projects.id)))}
+export async function POST(req:Request){const unauth=await requireAuth();if(unauth)return unauth;try{const parsed=input.safeParse(await req.json());if(!parsed.success)return Response.json({error:parsed.error.issues[0]?.message},{status:400});const [row]=await db.insert(projects).values(values(parsed.data)).returning();return Response.json(row,{status:201})}catch(e){console.error(e);return Response.json({error:"Unable to create project. Check the client and unique slug."},{status:500})}}

@@ -1,0 +1,4 @@
+import { db } from "@/db";import { services } from "@/db/schema";import { desc } from "drizzle-orm";import { requireAuth,slugify } from "@/lib/admin-api";import { serviceInput } from "@/lib/admin-validation";
+export const dynamic="force-dynamic";
+export async function GET(){const u=await requireAuth();if(u)return u;return Response.json(await db.select().from(services).orderBy(desc(services.id)))}
+export async function POST(req:Request){const u=await requireAuth();if(u)return u;try{const p=serviceInput.safeParse(await req.json());if(!p.success)return Response.json({error:p.error.issues[0]?.message},{status:400});const b=p.data,[row]=await db.insert(services).values({...b,slug:slugify(b.slug||b.name),imageUrl:b.imageUrl||null,videoUrl:b.videoUrl||null}).returning();return Response.json(row,{status:201})}catch(e){console.error(e);return Response.json({error:"Unable to create solution. Check that the slug is unique."},{status:500})}}

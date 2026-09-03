@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+.env
+.env.local
+.env.production
+.env.*.local
+*.log
+logs/
+.DS_Store
+.vercel/
+coverage/
+public/uploads/
+uploads/

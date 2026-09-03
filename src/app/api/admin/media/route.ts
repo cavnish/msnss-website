@@ -1,0 +1,6 @@
+import { requireAuth } from "@/lib/admin-api";
+import { deleteAsset, storageEnabled, uploadAsset } from "@/lib/storage";
+export const dynamic="force-dynamic";
+export async function GET(){const unauth=await requireAuth();if(unauth)return unauth;return Response.json({enabled:storageEnabled,buckets:["client-logos","project-images","catalogues"]})}
+export async function POST(req:Request){const unauth=await requireAuth();if(unauth)return unauth;try{const data=await req.formData();const file=data.get("file");const category=data.get("category");if(!(file instanceof File)||!(["clients","projects","catalogues"] as string[]).includes(String(category)))return Response.json({error:"A valid file and category are required."},{status:400});return Response.json(await uploadAsset(file,category as "clients"|"projects"|"catalogues"),{status:201})}catch(e){return Response.json({error:(e as Error).message},{status:400})}}
+export async function DELETE(req:Request){const unauth=await requireAuth();if(unauth)return unauth;try{const {bucket,path}=await req.json();if(!bucket||!path)return Response.json({error:"Bucket and path are required."},{status:400});await deleteAsset(bucket,path);return Response.json({ok:true})}catch(e){return Response.json({error:(e as Error).message},{status:400})}}

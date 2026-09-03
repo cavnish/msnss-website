@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="mx-auto max-w-7xl space-y-5 px-6 py-20" aria-label="Loading content"><div className="shimmer h-10 w-2/3 rounded-lg"/><div className="shimmer h-5 w-1/2 rounded-lg"/><div className="grid gap-5 pt-8 sm:grid-cols-2 lg:grid-cols-3">{[1,2,3,4,5,6].map(i=><div key={i} className="shimmer h-64 rounded-xl"/>)}</div></div>}

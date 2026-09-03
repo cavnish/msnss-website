@@ -1,0 +1,44 @@
+{
+  "name": "nextjs-postgresql-template",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^9.3.0",
+    "@supabase/supabase-js": "^2.112.4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/three": "^0.180.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "17.3.1",
+    "drizzle-orm": "0.45.2",
+    "framer-motion": "^13.1.1",
+    "jose": "^6.2.10",
+    "next": "16.2.6",
+    "pg": "8.20.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "resend": "^6.25.0",
+    "three": "^0.180.0",
+    "zod": "^4.5.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.17",
+    "@types/node": "22.19.15",
+    "@types/pg": "8.18.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "postcss": "8.5.8",
+    "tailwindcss": "4.1.17",
+    "tsx": "^4.23.13",
+    "typescript": "5.9.3"
+  }
+}

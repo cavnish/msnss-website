@@ -1,0 +1,34 @@
+# Render Web Service configuration for MSNSS – M S HVAC Engineers
+# This is a Next.js (App Router) Node server — NOT a static site.
+# Set all secret values in the Render dashboard (Environment tab), not here.
+services:
+  - type: web
+    name: msnss
+    runtime: node
+    plan: starter
+    autoDeploy: true
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Provide these in the Render dashboard (do not commit secrets):
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

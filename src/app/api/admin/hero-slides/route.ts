@@ -1,0 +1,4 @@
+import { db } from "@/db";import { heroSlides } from "@/db/schema";import { asc } from "drizzle-orm";import { requireAuth } from "@/lib/admin-api";import { heroInput } from "@/lib/admin-validation";
+export const dynamic="force-dynamic";
+export async function GET(){const u=await requireAuth();if(u)return u;return Response.json(await db.select().from(heroSlides).orderBy(asc(heroSlides.sortOrder)))}
+export async function POST(req:Request){const u=await requireAuth();if(u)return u;try{const p=heroInput.safeParse(await req.json());if(!p.success)return Response.json({error:p.error.issues[0]?.message},{status:400});const [row]=await db.insert(heroSlides).values({...p.data,videoUrl:p.data.videoUrl||null}).returning();return Response.json(row,{status:201})}catch(e){console.error(e);return Response.json({error:"Unable to create hero slide"},{status:500})}}
